@@ -11,7 +11,7 @@ const commands  = [
   },
 ];
 
-const rest: any = new REST({ version: '10' }).setToken('MTA3NTczMTk0OTEyNzIwODk4Nw.GlD_MP.7NWWQfWkZ3dt2Pf3NEfzVxP-KvU6xyIBCaiVrA');
+const rest: any = new REST({ version: '10' }).setToken('TOKEN');
 
 (async () => {
   try {
@@ -25,8 +25,8 @@ const rest: any = new REST({ version: '10' }).setToken('MTA3NTczMTk0OTEyNzIwODk4
   }
 })();
 
-const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const { Client, GatewayIntentBits }: any = require('discord.js');
+const client : any = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
