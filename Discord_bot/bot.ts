@@ -1,17 +1,18 @@
-import { Pair } from "../../../lib/list";
+// import { Pair } from "../../../lib/list";
 
-const { REST, Routes } : any = require('discord.js');
+// type commands = Pair<String, String>
 
-type commands = Pair<String, String>
+import { REST } from 'discord.js';
+import { Routes } from 'discord-api-types/v9';
 
-const commands  = [
+const commands = [
   {
     name: 'ping',
     description: 'Replies with Pong!',
   },
 ];
 
-const rest: any = new REST({ version: '10' }).setToken('TOKEN');
+const rest = new REST({ version: '10' }).setToken('MTA3NTczMTk0OTEyNzIwODk4Nw.GUYTm1.DTl4MRSvxIeg8FmDwRKk7u-UkCilTL4R6iiQws');
 
 (async () => {
   try {
@@ -25,19 +26,34 @@ const rest: any = new REST({ version: '10' }).setToken('TOKEN');
   }
 })();
 
-const { Client, GatewayIntentBits }: any = require('discord.js');
-const client : any = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+
+/*
+import { Client, Intents } from 'discord.js';
+
+const client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+  ],
+});
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`Logged in as ${client.user?.tag}!`);
 });
 
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+client.login('YOUR_DISCORD_BOT_TOKEN_HERE');
 
-  if (interaction.commandName === 'ping') {
-    await interaction.reply('Pong!');
-  }
+
+
+import * as Discord from 'discord.js';
+
+const client = new Discord.Client();
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user?.tag}!`);
 });
 
-client.login('MTA3NTczMTk0OTEyNzIwODk4Nw.GlD_MP.7NWWQfWkZ3dt2Pf3NEfzVxP-KvU6xyIBCaiVrA');
+client.login('YOUR_DISCORD_BOT_TOKEN_HERE');
+
+*/ 
