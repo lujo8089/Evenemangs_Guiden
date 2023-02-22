@@ -6,16 +6,6 @@ import { JSDOM } from 'jsdom';
 
 function fetchPage(url: string): Promise<string | undefined> { //Ger html
   console.log('Jag kommer in in i fetchPage');
-
-  // const HTMLData = axios
-  //   .get(url)
-  //   .then(res => res.data)
-  //   .catch((error: AxiosError) => {
-  //     console.error(`There was an error with ${error.config?.url}.`);
-  //     console.error(error.toJSON());
-  //   });
-
-  // return HTMLData;
   
   return axios
     .get(url)
@@ -72,13 +62,14 @@ async function fetchFromWebOrCache(url: string, ignoreCache: boolean) {
 
 function extractData(document: Document) {
   console.log('Kommer in i extractData');
-  const writingLinks: HTMLHeadingElement[] = Array.from(
-    document.querySelectorAll('h2'),
+  const writingLinks: HTMLAnchorElement[] | HTMLParagraphElement[] = Array.from(
+    document.querySelectorAll('p'),
   );
-  console.log(writingLinks);
+  //return writingLinks;
   return writingLinks.map(link => {
     return {
-      title: link,
+      title: link.title,
+      text: link.textContent,
       //url: link.href,
     };
   });

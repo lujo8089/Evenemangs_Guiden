@@ -43,14 +43,6 @@ var axios_1 = require("axios");
 var jsdom_1 = require("jsdom");
 function fetchPage(url) {
     console.log('Jag kommer in in i fetchPage');
-    // const HTMLData = axios
-    //   .get(url)
-    //   .then(res => res.data)
-    //   .catch((error: AxiosError) => {
-    //     console.error(`There was an error with ${error.config?.url}.`);
-    //     console.error(error.toJSON());
-    //   });
-    // return HTMLData;
     return axios_1["default"]
         .get(url)
         .then(function (res) { return res.data; })["catch"](function (error) {
@@ -99,11 +91,12 @@ function fetchFromWebOrCache(url, ignoreCache) {
 }
 function extractData(document) {
     console.log('Kommer in i extractData');
-    var writingLinks = Array.from(document.querySelectorAll('h2'));
-    console.log(writingLinks);
+    var writingLinks = Array.from(document.querySelectorAll('p'));
+    //return writingLinks;
     return writingLinks.map(function (link) {
         return {
-            title: link
+            title: link.title,
+            text: link.textContent
         };
     });
 }
