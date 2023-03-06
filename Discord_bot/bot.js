@@ -22,7 +22,7 @@ const allSlapp = JSON.parse(slapp);
 console.log(allGasque[2].dateOfEvent);
 
 client.once(Events.ClientReady, () => {
-	client.channels.cache.get('1075734034535174176').send('Redo att börja festa? För nu är festen här!');
+	client.channels.cache.get('1075734034535174176').send('Redo att börja festa? Nu är festen här!');
 	console.log('Redy to find the party!');
 });
 
