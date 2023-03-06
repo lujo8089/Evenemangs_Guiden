@@ -9,7 +9,6 @@ import { Options } from "selenium-webdriver/chrome";
  * @param {string} filename 
  */
 function saveData(Data: string, filename: string): void{
-
     if (!existsSync('data')) {
         mkdirSync('data');
     }
@@ -23,12 +22,13 @@ function saveData(Data: string, filename: string): void{
             console.log("File created!");
         });
 }
+
 /**
  * Takes a URL of a link of an event and return all valuable information of the event in a string
  * @param {string} url - URL of event link we want to scrape
  * @returns {string} text - Returns a string of all the information of the event of the given URL
  */
-async function getInfoFromLink(url: string): Promise<string>{
+async function getInfoFromLink(url: string): Promise<Record<string, string>>{
     //Set up webdriver
     const options = new Options();
     options.addArguments("--headless"); // Run Chrome in headless mode
@@ -46,15 +46,29 @@ async function getInfoFromLink(url: string): Promise<string>{
         await driver.wait(until.urlContains("evid="), 10000);
 
         //Find element with event information
-        const info =  await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]'))
+        const info =  await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]'));
+
+        const infoHeading = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/h1')).getText();
+        const infoHost = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[1]')).getText();
+        const infoDateOfEvent = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[2]')).getText();
+        const infoInfo = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/div')).getText();
+
+        //Turns info into record for ease of future use 
+        const infoArr: Record<string,string> = {
+            heading : infoHeading,
+            host: infoHost,
+            dateOfEvent: infoDateOfEvent,
+            info: infoInfo
+        }; 
         
         //Returns the text of the element
-        return await info.getText();
+        return infoArr;
 
     } finally {
         await driver.quit();
     }
 }
+
 /**
  * Take a URL of the site we want to scrape and stores the information we have specified into a file using selenium-webdriver
  * @param {string} url - URL of the site we want to scrape
@@ -103,8 +117,8 @@ async function scrapeSite(url: string, filename: string) {
         console.log(links.length); //links is array
         
 
-        const allInfo: any[] = []; //Empty array to store all links info
-
+        const allInfo: Record<string,string>[] = []; //Empty array to store all links info
+        
         //Goeas through all links and scrapes each links page for event info
         for(let i = 1 ; i <= links.length; i++){
             //Finds link site of event
@@ -116,8 +130,8 @@ async function scrapeSite(url: string, filename: string) {
             const info = await getInfoFromLink(href);
             console.log(info);
 
-            const infoArr: string[] = [info]; //Turns info into array for ease of future use 
-            allInfo.push(infoArr);//Adds event info to the previous empty array
+
+            allInfo.push(info);//Adds event info to the previous empty array
         }
 
         console.log(allInfo);
