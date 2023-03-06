@@ -3,6 +3,11 @@ import { existsSync, mkdirSync, writeFile } from "fs";
 import { Builder, By, Key, until } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 
+/**
+ * Takes a sting of data and store it in a file in the folder "data" withe he given filename
+ * @param {string} Data 
+ * @param {string} filename 
+ */
 function saveData(Data: string, filename: string): void{
 
     if (!existsSync('data')) {
@@ -18,8 +23,12 @@ function saveData(Data: string, filename: string): void{
             console.log("File created!");
         });
 }
-
-async function getInfo(url: string){
+/**
+ * Takes a URL of a link of an event and return all valuable information of the event in a string
+ * @param {string} url - URL of event link we want to scrape
+ * @returns {string} text - Returns a string of all the information of the event of the given URL
+ */
+async function getInfoFromLink(url: string): Promise<string>{
     //Set up webdriver
     const options = new Options();
     options.addArguments("--headless"); // Run Chrome in headless mode
@@ -46,7 +55,11 @@ async function getInfo(url: string){
         await driver.quit();
     }
 }
-
+/**
+ * Take a URL of the site we want to scrape and stores the information we have specified into a file using selenium-webdriver
+ * @param {string} url - URL of the site we want to scrape
+ * @param {string} filename - The name of the file we want to store the data we have scraped in
+ */
 async function scrapeSite(url: string, filename: string) {
 
     //Set up webdriver
@@ -100,7 +113,7 @@ async function scrapeSite(url: string, filename: string) {
             console.log(href);
 
             //Scrape link
-            const info = await getInfo(href);
+            const info = await getInfoFromLink(href);
             console.log(info);
 
             const infoArr: string[] = [info]; //Turns info into array for ease of future use 
