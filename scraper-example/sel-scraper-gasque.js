@@ -36,11 +36,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.scrapeSite = exports.getInfoFromLink = exports.saveData = void 0;
 var fs_1 = require("fs");
 var selenium_webdriver_1 = require("selenium-webdriver");
 var chrome_1 = require("selenium-webdriver/chrome");
 /**
- * Takes a sting of data and store it in a file in the folder "data" withe he given filename
+ * Takes a string of data and stores it in a file in the folder "data" withe he given filename
  * @param {string} Data
  * @param {string} filename
  */
@@ -55,6 +56,7 @@ function saveData(Data, filename) {
         console.log("File created!");
     });
 }
+exports.saveData = saveData;
 /**
  * Takes a URL of a link of an event and return all valuable information of the event in a string
  * @param {string} url - URL of event link we want to scrape
@@ -62,7 +64,7 @@ function saveData(Data, filename) {
  */
 function getInfoFromLink(url) {
     return __awaiter(this, void 0, void 0, function () {
-        var options, driver, info, infoHeading, infoHost, infoDateOfEvent, infoInfo, infoArr;
+        var options, driver, infoHeading, infoHost, infoDateOfEvent, infoInfo, infoArr;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -77,7 +79,7 @@ function getInfoFromLink(url) {
                     driver = _a.sent();
                     _a.label = 2;
                 case 2:
-                    _a.trys.push([2, , 10, 12]);
+                    _a.trys.push([2, , 9, 11]);
                     //Go to page
                     return [4 /*yield*/, driver.get(url)];
                 case 3:
@@ -88,20 +90,17 @@ function getInfoFromLink(url) {
                 case 4:
                     //Wait for page to load
                     _a.sent();
-                    return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]'))];
-                case 5:
-                    info = _a.sent();
                     return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/h1')).getText()];
-                case 6:
+                case 5:
                     infoHeading = _a.sent();
                     return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[1]')).getText()];
-                case 7:
+                case 6:
                     infoHost = _a.sent();
                     return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[2]')).getText()];
-                case 8:
+                case 7:
                     infoDateOfEvent = _a.sent();
                     return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/div')).getText()];
-                case 9:
+                case 8:
                     infoInfo = _a.sent();
                     infoArr = {
                         heading: infoHeading,
@@ -112,15 +111,16 @@ function getInfoFromLink(url) {
                     };
                     //Returns the text of the element
                     return [2 /*return*/, infoArr];
-                case 10: return [4 /*yield*/, driver.quit()];
-                case 11:
+                case 9: return [4 /*yield*/, driver.quit()];
+                case 10:
                     _a.sent();
                     return [7 /*endfinally*/];
-                case 12: return [2 /*return*/];
+                case 11: return [2 /*return*/];
             }
         });
     });
 }
+exports.getInfoFromLink = getInfoFromLink;
 /**
  * Take a URL of the site we want to scrape and stores the information we have specified into a file using selenium-webdriver
  * @param {string} url - URL of the site we want to scrape
@@ -128,7 +128,7 @@ function getInfoFromLink(url) {
  */
 function scrapeSite(url, filename) {
     return __awaiter(this, void 0, void 0, function () {
-        var options, driver, button1, button2, button3, button4, links, allInfo, i, hrefElement, href, info;
+        var options, driver, button1, button2, button3, button4, path, links, allInfo, i, hrefElement, href, info;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -173,16 +173,14 @@ function scrapeSite(url, filename) {
                     return [4 /*yield*/, button4.click()];
                 case 11:
                     _a.sent();
-                    // const button2 = await driver.findElement(By.css("#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)"));//#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)
-                    // await button2.click();
                     // Wait for the page to load after the button click
                     return [4 /*yield*/, driver.sleep(10000)];
                 case 12:
-                    // const button2 = await driver.findElement(By.css("#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)"));//#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)
-                    // await button2.click();
                     // Wait for the page to load after the button click
                     _a.sent();
-                    return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.xpath('//*[@id="event-category-4"]/li'))];
+                    path = '//*[@id="event-category-4"]/li' //Path to gasque events
+                    ;
+                    return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.xpath(path))];
                 case 13:
                     links = _a.sent();
                     console.log(links.length); //links is array
@@ -191,7 +189,7 @@ function scrapeSite(url, filename) {
                     _a.label = 14;
                 case 14:
                     if (!(i <= links.length)) return [3 /*break*/, 19];
-                    return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath('//*[@id="event-category-4"]/li[' + i + ']/div/a'))];
+                    return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath(path + '[' + i + ']/div/a'))];
                 case 15:
                     hrefElement = _a.sent();
                     return [4 /*yield*/, hrefElement.getAttribute("href")];
@@ -221,6 +219,7 @@ function scrapeSite(url, filename) {
         });
     });
 }
+exports.scrapeSite = scrapeSite;
 var url = "https://nationsguiden.se";
 var filename = "natguiden-gasque";
 scrapeSite(url, filename);

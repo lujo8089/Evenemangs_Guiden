@@ -4,11 +4,11 @@ import { Builder, By, Key, until } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 
 /**
- * Takes a sting of data and store it in a file in the folder "data" withe he given filename
+ * Takes a string of data and stores it in a file in the folder "data" withe he given filename
  * @param {string} Data 
  * @param {string} filename 
  */
-function saveData(Data: string, filename: string): void{
+export function saveData(Data: string, filename: string): void{
     if (!existsSync('data')) {
         mkdirSync('data');
     }
@@ -28,7 +28,7 @@ function saveData(Data: string, filename: string): void{
  * @param {string} url - URL of event link we want to scrape
  * @returns {string} text - Returns a string of all the information of the event of the given URL
  */
-async function getInfoFromLink(url: string): Promise<Record<string, string>>{
+export async function getInfoFromLink(url: string): Promise<Record<string, string>>{
     //Set up webdriver
     const options = new Options();
     options.addArguments("--headless"); // Run Chrome in headless mode
@@ -76,7 +76,7 @@ async function getInfoFromLink(url: string): Promise<Record<string, string>>{
  * @param {string} url - URL of the site we want to scrape
  * @param {string} filename - The name of the file we want to store the data we have scraped in
  */
-async function scrapeSite(url: string, filename: string) {
+export async function scrapeSite(url: string, filename: string) {
 
     //Set up webdriver
     const options = new Options();
@@ -112,7 +112,6 @@ async function scrapeSite(url: string, filename: string) {
 
     
         //Finds all events
-        //const path = '//*[@id="event-category-11"]/li' //Path to släpp events
         const path= '//*[@id="event-category-4"]/li' //Path to gasque events
         const links = await driver.findElements(By.xpath(path));
         console.log(links.length); //links is array
