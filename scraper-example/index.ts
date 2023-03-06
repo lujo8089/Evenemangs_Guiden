@@ -4,6 +4,12 @@ import { resolve } from 'path';
 import axios, { AxiosError } from 'axios';
 import { JSDOM } from 'jsdom';
 
+interface event{
+  title: string | null | undefined,
+  //title: Element | null,
+  //title: NodeListOf<Element>,
+}
+
 function fetchPage(url: string): Promise<string | undefined> { //Ger html
   console.log('Jag kommer in in i fetchPage');
   
@@ -43,7 +49,7 @@ async function fetchFromWebOrCache(url: string, ignoreCache: boolean) {
     const HTMLData = await fetchPage(url);
     //console.log('Jag har hämtat HTML datan');
     //console.log(ignoreCache);
-    if (!ignoreCache){//&& !(HTMLData === undefined)) {
+    if (!ignoreCache) { //&& !(HTMLData === undefined)) {
       console.log('Kommer in i if satsen');
       writeFile(
         resolve(
@@ -62,16 +68,25 @@ async function fetchFromWebOrCache(url: string, ignoreCache: boolean) {
 
 function extractData(document: Document) {
   console.log('Kommer in i extractData');
-  const writingLinks: HTMLAnchorElement[] | HTMLParagraphElement[] = Array.from(
-    document.querySelectorAll('p'),
+
+  const writingLinks: (HTMLAnchorElement | HTMLParagraphElement | HTMLHeadingElement)[] = Array.from(
+    document.querySelectorAll('#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)').click().querySelectorAll('#event-category-3')
+
+    //document.querySelectorAll('#event-category-3')
   );
   //return writingLinks;
-  return writingLinks.map(link => {
+  const events: event[] = [];
+
+  return writingLinks.map(node => {
     return {
-      title: link.title,
-      text: link.textContent,
+      text: node.textContent,
       //url: link.href,
     };
+    // const event = {
+    //   title: node.querySelector('.event-item-title')?.textContent,
+    // };
+    
+    //events.push(event);
   });
 }
 
@@ -94,12 +109,12 @@ function saveData(filename: string, data: any) {
 
 async function getData() {
   const document = await fetchFromWebOrCache(
-    'https://en.wikipedia.org/wiki/Web_scraping',
+    'https://nationsguiden.se',
     true,
   );
   const data = extractData(document);
   //console.log(data);
-  saveData('wiki-web-scraping', data);
+  saveData('natGuide', data);
 }
 
 getData();

@@ -91,13 +91,18 @@ function fetchFromWebOrCache(url, ignoreCache) {
 }
 function extractData(document) {
     console.log('Kommer in i extractData');
-    var writingLinks = Array.from(document.querySelectorAll('p'));
+    document.querySelector('#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)');
+    var writingLinks = Array.from(document.querySelectorAll('#event-category-3'));
     //return writingLinks;
-    return writingLinks.map(function (link) {
+    var events = [];
+    return writingLinks.map(function (node) {
         return {
-            title: link.title,
-            text: link.textContent
+            text: node.textContent
         };
+        // const event = {
+        //   title: node.querySelector('.event-item-title')?.textContent,
+        // };
+        //events.push(event);
     });
 }
 function saveData(filename, data) {
@@ -117,12 +122,12 @@ function getData() {
         var document, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, fetchFromWebOrCache('https://en.wikipedia.org/wiki/Web_scraping', true)];
+                case 0: return [4 /*yield*/, fetchFromWebOrCache('https://nationsguiden.se', true)];
                 case 1:
                     document = _a.sent();
                     data = extractData(document);
                     //console.log(data);
-                    saveData('wiki-web-scraping', data);
+                    saveData('natGuide', data);
                     return [2 /*return*/];
             }
         });
