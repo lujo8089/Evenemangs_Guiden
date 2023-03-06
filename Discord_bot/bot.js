@@ -1,39 +1,48 @@
-const { REST, Routes } = require('discord.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, Collection, Events, GatewayIntentBits, CommandInteraction, EmbedBuilder } = require('discord.js');
+const { token } = require('./cofig.json');
+const { IT_Event } = require('./dataTypes');
 
-const commands = [
-  {
-    name: 'ping',
-    description: 'Replies with Pong!',
-  },
-];
+const client = new Client({ intents: [
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.MessageContent,
+	GatewayIntentBits.GuildMembers,
+],
+ });
 
-const rest = new REST({ version: '10' }).setToken('MTA3NTczMTk0OTEyNzIwODk4Nw.GUYTm1.DTl4MRSvxIeg8FmDwRKk7u-UkCilTL4R6iiQws');
+// client.commands = new Collection();
+// const commandsPath = path.join(__dirname, 'commands');
+// const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-(async () => {
-  try {
-    console.log('Started refreshing application (/) commands.');
+// for (const file of commandFiles) {
+// 	const filePath = path.join(commandsPath, file);
+// 	const command = require(filePath);
+// 	client.commands.set(command.data.name, command);
+// }
 
-    await rest.put(Routes.applicationCommands('1075731949127208987'), { body: commands });
-
-    console.log('Successfully reloaded application (/) commands.');
-  } catch (error) {
-    console.error(error);
-  }
-})();
-
-const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+client.once(Events.ClientReady, () => {
+	console.log('Ready!');
 });
 
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+//Inväntar command
+client.on(Events.InteractionCreate, async interaction => {
+	if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    await interaction.reply('Pong!');
-  }
+	if (interaction.commandName === 'senast-it') {
+		const it_channel = client.channels.cache.get('1077948249111015526');
+
+		const embedMessage = new EmbedBuilder()
+                .setTitle(IT_Event.heading)
+                .setURL(IT_Event.URL)
+				.setDescription(IT_Event.info)
+				.setTimestamp(IT_Event.dateOfEvent)
+
+		await it_channel.send({ embeds: [embedMessage], ephemeral: true});
+
+		await interaction.reply("Senaste eventen finns nu i it-sektionen");
+	}
 });
 
-client.login('MTA3NTczMTk0OTEyNzIwODk4Nw.GUYTm1.DTl4MRSvxIeg8FmDwRKk7u-UkCilTL4R6iiQws');
+client.login(token);
