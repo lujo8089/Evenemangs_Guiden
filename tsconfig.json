@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+  },
+    "include": ["./Discord_bot/*.ts"],
+    "exclude": ["./Discord_bot/node_modules"]
+  }
+  

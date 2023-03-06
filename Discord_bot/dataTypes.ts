@@ -1,6 +1,6 @@
 
 
-export type Events = {
+export type Handelse = {
     host: string,
     coHost: string | undefined,
     location: string,
@@ -17,7 +17,7 @@ export type Events = {
 
 
 
-export const IT_Event: Events = {
+export const IT_Event: Handelse = {
 host: "IT-Sektionen",
 coHost: undefined,
 location: "Uthgård",
