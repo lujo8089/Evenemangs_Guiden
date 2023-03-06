@@ -76,7 +76,7 @@ export async function getInfoFromLink(url: string): Promise<Record<string, strin
  * @param {string} url - URL of the site we want to scrape
  * @param {string} filename - The name of the file we want to store the data we have scraped in
  */
-export async function scrapeSite(url: string, filename: string) {
+export async function scrapeSite(url: string, filename: string): Promise<void> {
 
     //Set up webdriver
     const options = new Options();
@@ -127,7 +127,7 @@ export async function scrapeSite(url: string, filename: string) {
             console.log(href);
 
             //Scrape link
-            const info = await getInfoFromLink(href);
+            const info: Record<string, string> = await getInfoFromLink(href);
             console.log(info);
 
 
@@ -143,7 +143,7 @@ export async function scrapeSite(url: string, filename: string) {
     }
 }
 
-const url = "https://nationsguiden.se";
-const filename = "natguiden-gasque";
+const url: string = "https://nationsguiden.se";
+const filename: string = "natguiden-gasque";
 
 scrapeSite(url, filename);
