@@ -45,12 +45,13 @@ async function getInfoFromLink(url: string): Promise<Record<string, string>>{
         //Wait for page to load
         await driver.wait(until.urlContains("evid="), 10000);
 
-        //Find element with event information
-        const info =  await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]'));
-
+        //Find element with event heading(title) data and gets ifs text
         const infoHeading = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/h1')).getText();
+        //Find element with event host data and gets ifs text
         const infoHost = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[1]')).getText();
+        //Find element with event date and gets ifs text
         const infoDateOfEvent = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[2]')).getText();
+        //Find element with event information and gets ifs text
         const infoInfo = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/div')).getText();
 
         //Turns info into record for ease of future use 
@@ -105,17 +106,15 @@ async function scrapeSite(url: string, filename: string) {
         const button4 = await driver.findElement(By.css("#datepicker-conatainer-9018 > div > div.drp-buttons.filter-footer > div > div.btn-group.do-filter > button"));
         await button4.click();
 
-        // const button2 = await driver.findElement(By.css("#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)"));//#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)
-        // await button2.click();
-
 
         // Wait for the page to load after the button click
         await driver.sleep(10000);
 
     
-       //Finds all events
-        //const links = await driver.findElements(By.xpath('//*[@id="event-category-11"]/li')); //släpp evnets
-        const links = await driver.findElements(By.xpath('//*[@id="event-category-4"]/li')); //gasque events
+        //Finds all events
+        //const path = '//*[@id="event-category-11"]/li' //Path to släpp events
+        const path= '//*[@id="event-category-4"]/li' //Path to gasque events
+        const links = await driver.findElements(By.xpath(path));
         console.log(links.length); //links is array
         
 
@@ -124,8 +123,7 @@ async function scrapeSite(url: string, filename: string) {
         //Goeas through all links and scrapes each links page for event info
         for(let i = 1 ; i <= links.length; i++){
             //Finds link site of event
-            //const hrefElement = await driver.findElement(By.xpath('//*[@id="event-category-11"]/li[' + i + ']/div/a')); //släpp events
-            const hrefElement = await driver.findElement(By.xpath('//*[@id="event-category-4"]/li[' + i + ']/div/a')); //gasque events
+            const hrefElement = await driver.findElement(By.xpath(path + '[' + i + ']/div/a')); 
             const href = await hrefElement.getAttribute("href");
             console.log(href);
 
