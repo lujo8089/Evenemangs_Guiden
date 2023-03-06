@@ -58,7 +58,8 @@ async function getInfoFromLink(url: string): Promise<Record<string, string>>{
             heading : infoHeading,
             host: infoHost,
             dateOfEvent: infoDateOfEvent,
-            info: infoInfo
+            info: infoInfo,
+            URL: url,
         }; 
         
         //Returns the text of the element
@@ -112,8 +113,9 @@ async function scrapeSite(url: string, filename: string) {
         await driver.sleep(10000);
 
     
-       //Finds all events (This case all "släpp" events)
-        const links = await driver.findElements(By.xpath('//*[@id="event-category-11"]/li')); //
+       //Finds all events
+        //const links = await driver.findElements(By.xpath('//*[@id="event-category-11"]/li')); //släpp evnets
+        const links = await driver.findElements(By.xpath('//*[@id="event-category-4"]/li')); //gasque events
         console.log(links.length); //links is array
         
 
@@ -122,7 +124,8 @@ async function scrapeSite(url: string, filename: string) {
         //Goeas through all links and scrapes each links page for event info
         for(let i = 1 ; i <= links.length; i++){
             //Finds link site of event
-            const hrefElement = await driver.findElement(By.xpath('//*[@id="event-category-11"]/li[' + i + ']/div/a'));
+            //const hrefElement = await driver.findElement(By.xpath('//*[@id="event-category-11"]/li[' + i + ']/div/a')); //släpp events
+            const hrefElement = await driver.findElement(By.xpath('//*[@id="event-category-4"]/li[' + i + ']/div/a')); //gasque events
             const href = await hrefElement.getAttribute("href");
             console.log(href);
 
@@ -144,6 +147,6 @@ async function scrapeSite(url: string, filename: string) {
 }
 
 const url = "https://nationsguiden.se";
-const filename = "natguiden-test";
+const filename = "natguiden-gasque";
 
 scrapeSite(url, filename);
