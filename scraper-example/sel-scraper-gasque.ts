@@ -4,12 +4,11 @@ import { Builder, By, Key, until } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 
 /**
- * Takes a sting of data and store it in a file in the folder "data" withe he given filename
+ * Takes a string of data and stores it in a file in the folder "data" withe he given filename
  * @param {string} Data 
  * @param {string} filename 
  */
-function saveData(Data: string, filename: string): void{
-
+export function saveData(Data: string, filename: string): void{
     if (!existsSync('data')) {
         mkdirSync('data');
     }
@@ -23,12 +22,13 @@ function saveData(Data: string, filename: string): void{
             console.log("File created!");
         });
 }
+
 /**
  * Takes a URL of a link of an event and return all valuable information of the event in a string
  * @param {string} url - URL of event link we want to scrape
  * @returns {string} text - Returns a string of all the information of the event of the given URL
  */
-async function getInfoFromLink(url: string): Promise<string>{
+export async function getInfoFromLink(url: string): Promise<Record<string, string>>{
     //Set up webdriver
     const options = new Options();
     options.addArguments("--headless"); // Run Chrome in headless mode
@@ -45,22 +45,38 @@ async function getInfoFromLink(url: string): Promise<string>{
         //Wait for page to load
         await driver.wait(until.urlContains("evid="), 10000);
 
-        //Find element with event information
-        const info =  await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]'))
+        //Find element with event heading(title) data and gets ifs text
+        const infoHeading = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/h1')).getText();
+        //Find element with event host data and gets ifs text
+        const infoHost = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[1]')).getText();
+        //Find element with event date and gets ifs text
+        const infoDateOfEvent = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/header/div[2]')).getText();
+        //Find element with event information and gets ifs text
+        const infoInfo = await driver.findElement(By.xpath('//*[@id="wap-section-9019"]/div[2]/div/div[1]/div[2]/div')).getText();
+
+        //Turns info into record for ease of future use 
+        const infoArr: Record<string,string> = {
+            heading : infoHeading,
+            host: infoHost,
+            dateOfEvent: infoDateOfEvent,
+            info: infoInfo,
+            URL: url,
+        }; 
         
         //Returns the text of the element
-        return await info.getText();
+        return infoArr;
 
     } finally {
         await driver.quit();
     }
 }
+
 /**
  * Take a URL of the site we want to scrape and stores the information we have specified into a file using selenium-webdriver
  * @param {string} url - URL of the site we want to scrape
  * @param {string} filename - The name of the file we want to store the data we have scraped in
  */
-async function scrapeSite(url: string, filename: string) {
+export async function scrapeSite(url: string, filename: string) {
 
     //Set up webdriver
     const options = new Options();
@@ -90,25 +106,23 @@ async function scrapeSite(url: string, filename: string) {
         const button4 = await driver.findElement(By.css("#datepicker-conatainer-9018 > div > div.drp-buttons.filter-footer > div > div.btn-group.do-filter > button"));
         await button4.click();
 
-        // const button2 = await driver.findElement(By.css("#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)"));//#datepicker-conatainer-9018 > div > div.filter-actions.filter-actions-ranges > div > ul > li:nth-child(3)
-        // await button2.click();
-
 
         // Wait for the page to load after the button click
         await driver.sleep(10000);
 
     
-       //Finds all events (This case all "släpp" events)
-        const links = await driver.findElements(By.xpath('//*[@id="event-category-11"]/li')); //
+        //Finds all events
+        const path= '//*[@id="event-category-4"]/li' //Path to gasque events
+        const links = await driver.findElements(By.xpath(path));
         console.log(links.length); //links is array
         
 
-        const allInfo: any[] = []; //Empty array to store all links info
-
+        const allInfo: Record<string,string>[] = []; //Empty array to store all links info
+        
         //Goeas through all links and scrapes each links page for event info
         for(let i = 1 ; i <= links.length; i++){
             //Finds link site of event
-            const hrefElement = await driver.findElement(By.xpath('//*[@id="event-category-11"]/li[' + i + ']/div/a'));
+            const hrefElement = await driver.findElement(By.xpath(path + '[' + i + ']/div/a')); 
             const href = await hrefElement.getAttribute("href");
             console.log(href);
 
@@ -116,8 +130,8 @@ async function scrapeSite(url: string, filename: string) {
             const info = await getInfoFromLink(href);
             console.log(info);
 
-            const infoArr: string[] = [info]; //Turns info into array for ease of future use 
-            allInfo.push(infoArr);//Adds event info to the previous empty array
+
+            allInfo.push(info);//Adds event info to the previous empty array
         }
 
         console.log(allInfo);
@@ -130,6 +144,6 @@ async function scrapeSite(url: string, filename: string) {
 }
 
 const url = "https://nationsguiden.se";
-const filename = "natguiden-test";
+const filename = "natguiden-gasque";
 
 scrapeSite(url, filename);
